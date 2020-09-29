@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 from function_postprocessing import sumCaseByAge
+from class_region import Region
 
 def checkEffect(real, simulate, stateList):
     real = sumCaseByAge(real, stateList, list(range(17)))
@@ -9,10 +10,35 @@ def checkEffect(real, simulate, stateList):
     simulate_sum = sum(simulate)
     return simulate_sum <= real_sum
     
-def economicEffect(weight, policy):
-    return np.dot(np.array(weight).transpose(), np.array(policy))
+def economicEffect(weight, policy, CM):
+    contact = np.array(policy) * CM
+    return np.dot(np.array(weight).transpose(), contact)
+
+def best_search(weight, policy_list, CM):                
+    maxScore = 0
+    bestPolicy = []
+    for policy in policy_list:
+        score = economicEffect(weight, policy, CM)
+        if score > maxScore:
+            maxScore = score
+            bestPolicy = policy[:]
+    return bestPolicy
     
 nyRealCumCase, nyRealDailyCase = pickle.load(open('./simResultsPkl/nyReal_fourPhases.pkl', 'rb'))
+
+"""Region settings."""
+nyPopPath = './data/ny_population.csv' 
+nyCMPath = './data/CM/'
+nySafeGraphIndexPath = './data/ny_index.csv'
+nyTotalInitialInfections = 1000
+controlInfoSimulate = [['2020-01-01', '2020-12-31', {'school': 1,
+                                                     'home': 1,
+                                                     'work': 1,
+                                                     'social distancing': 1}]]
+nySimulate = Region(nyTotalInitialInfections, nyPopPath, nyCMPath, 
+                    nySafeGraphIndexPath, controlInfoSimulate, useSafeGraphIndex=False)
+CM = nySimulate.normalizeCM
+CM_sum = [np.sum(val) for val in CM]
 
 path0 = './OptResultsPkl/'
 weightWorkList = weightSchoolList = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -38,24 +64,14 @@ for weightSchool in weightSchoolList:
                
             if checkEffect(nyRealDailyCase, nySimulateDailyCase, [6]):
                 effectDeathList.append([weightSchool, 1, weightWork, weightOther])
-
-def best_search(weight, policy_list):                
-    maxScore = 0
-    bestPolicy = []
-    for policy in policy_list:
-        score = economicEffect(weight, policy)
-        if score > maxScore:
-            maxScore = score
-            bestPolicy = policy[:]
-    return bestPolicy
   
 weight_identity = [1]*4
-weight_heterogeneity = [1, 0, 5, 2.5] 
+weight_heterogeneity = [0.2, 0.2, 1, 0.5] 
 print('Identity weight')            
-print('Best control for infections', best_search(weight_identity, effectTotalList))
-print('Best control for dealh', best_search(weight_identity, effectDeathList))
-print('Best control for severe infections', best_search(weight_identity, effectSevereList))
-print('Heterogeneity weights')
-print('Best control for infections', best_search(weight_heterogeneity, effectTotalList))
-print('Best control for dealh', best_search(weight_heterogeneity, effectDeathList))
-print('Best control for severe infections', best_search(weight_heterogeneity, effectSevereList))
+print('Best control for infections', best_search(weight_identity, effectTotalList, CM_sum))
+print('Best control for dealh', best_search(weight_identity, effectDeathList, CM_sum))
+print('Best control for severe infections', best_search(weight_identity, effectSevereList, CM_sum))
+print('Intuitive assumptions')
+print('Best control for infections', best_search(weight_heterogeneity, effectTotalList, CM_sum))
+print('Best control for dealh', best_search(weight_heterogeneity, effectDeathList, CM_sum))
+print('Best control for severe infections', best_search(weight_heterogeneity, effectSevereList, CM_sum))

@@ -4,6 +4,7 @@ Created on Thu Mar  5 19:49:00 2020
 This code is used to implement SIR model with contact matrices.
 @author: Jason
 """
+import math
 import datetime
 import numpy as np
 import pickle
@@ -32,13 +33,13 @@ if not os.path.exists(savePath):
 
 """Control infomation"""
 controlInfoReal = [['2020-01-01', '2020-03-07', {'school': 0.8, 'social distancing': 0.8, 'work': 0.8}],
-                ['2020-03-07', '2020-03-17', {'school': 0.8, 'social distancing': 0.5, 'work': 0.5}],
-                ['2020-03-17', '2020-03-24', {'school': 0, 'social distancing': 0.4, 'work': 0.5}],
+                ['2020-03-07', '2020-03-17', {'school': 0.5, 'social distancing': 0.5, 'work': 0.5}],
+                ['2020-03-17', '2020-03-24', {'school': 0, 'social distancing': 0.5, 'work': 0.5}],
                 ['2020-03-24', '2020-06-08', {'school': 0, 'social distancing': 0.3, 'home': 1, 'work': 0.3}],
-                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.325, 'home': 1, 'work': 0.325}],
-                ['2020-06-22', '2020-07-06', {'school': 0, 'social distancing': 0.35, 'home': 1, 'work': 0.35}],
-                ['2020-07-06', '2020-07-20', {'school': 0, 'social distancing': 0.375, 'home': 1, 'work': 0.375}],
-                ['2020-07-20', '2020-09-01', {'school': 0, 'social distancing': 0.4, 'home': 1, 'work': 0.4}],
+                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 1), 'home': 1, 'work': 0.3*math.pow(1.05, 1)}],
+                ['2020-06-22', '2020-07-06', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 2), 'home': 1, 'work': 0.3*math.pow(1.05, 2)}],
+                ['2020-07-06', '2020-07-20', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 3), 'home': 1, 'work': 0.3*math.pow(1.05, 3)}],
+                ['2020-07-20', '2020-09-01', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 4), 'home': 1, 'work': 0.3*math.pow(1.05, 4)}],
                 ['2020-09-01', '2020-12-31', {'school': 0.5, 'social distancing': 0.5, 'home': 1, 'work': 0.5}]]
 nyReal = Region(nyTotalInitialInfections, nyPopPath, nyCMPath, nySafeGraphIndexPath, controlInfoReal, useSafeGraphIndex=False)
 nyRealParameters = nyReal.getRegionParameters()
@@ -70,11 +71,11 @@ nyElderlyCumCase, nyElderlyDailyCase = model(EpidemicParameters, nyElderlyParame
 pickle.dump([nyElderlyCumCase, nyElderlyDailyCase], open(savePath+'nyElderly.pkl', 'wb'))
 
 controlInfoRelaxJuly = [['2020-01-01', '2020-03-07', {'school': 0.8, 'social distancing': 0.8, 'work': 0.8}],
-                ['2020-03-07', '2020-03-17', {'school': 0.8, 'social distancing': 0.5, 'work': 0.5}],
+                ['2020-03-07', '2020-03-17', {'school': 0.5, 'social distancing': 0.5, 'work': 0.5}],
                 ['2020-03-17', '2020-03-24', {'school': 0, 'social distancing': 0.4, 'work': 0.5}],
                 ['2020-03-24', '2020-06-08', {'school': 0, 'social distancing': 0.3, 'home': 1, 'work': 0.3}],
-                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.325, 'home': 1, 'work': 0.325}],
-                ['2020-06-22', '2020-07-01', {'school': 0, 'social distancing': 0.35, 'home': 1, 'work': 0.35}],
+                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 1), 'home': 1, 'work': 0.3*math.pow(1.05, 1)}],
+                ['2020-06-22', '2020-07-01', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 2), 'home': 1, 'work': 0.3*math.pow(1.05, 2)}],
                 ['2020-07-01', '2020-09-01', {'school': 0, 'social distancing': 0.5, 'home': 1, 'work': 0.65}],
                 ['2020-09-01', '2020-12-31', {'school': 0.5, 'social distancing': 0.5, 'home': 1, 'work': 0.5}]]
 nyRelaxJuly = Region(nyTotalInitialInfections, nyPopPath, nyCMPath, nySafeGraphIndexPath, controlInfoRelaxJuly, useSafeGraphIndex=False)
@@ -83,28 +84,28 @@ nyRelaxJulyCumCase, nyRelaxJulyDailyCase = model(EpidemicParameters, nyRelaxJuly
 pickle.dump([nyRelaxJulyCumCase, nyRelaxJulyDailyCase], open(savePath+'nyRelaxJuly.pkl', 'wb'))
 
 controlInfoRelaxAugust = [['2020-01-01', '2020-03-07', {'school': 0.8, 'social distancing': 0.8, 'work': 0.8}],
-                ['2020-03-07', '2020-03-17', {'school': 0.8, 'social distancing': 0.5, 'work': 0.5}],
+                ['2020-03-07', '2020-03-17', {'school': 0.5, 'social distancing': 0.5, 'work': 0.5}],
                 ['2020-03-17', '2020-03-24', {'school': 0, 'social distancing': 0.4, 'work': 0.5}],
                 ['2020-03-24', '2020-06-08', {'school': 0, 'social distancing': 0.3, 'home': 1, 'work': 0.3}],
-                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.325, 'home': 1, 'work': 0.325}],
-                ['2020-06-22', '2020-07-06', {'school': 0, 'social distancing': 0.35, 'home': 1, 'work': 0.35}],
-                ['2020-07-06', '2020-07-20', {'school': 0, 'social distancing': 0.375, 'home': 1, 'work': 0.375}],
-                ['2020-07-20', '2020-08-01', {'school': 0, 'social distancing': 0.4, 'home': 1, 'work': 0.4}],
-                ['2020-08-01', '2020-12-31', {'school': 0.5, 'social distancing': 0.5, 'home': 1, 'work': 0.5}]]
+                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 1), 'home': 1, 'work': 0.325}],
+                ['2020-06-22', '2020-07-06', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 2), 'home': 1, 'work': 0.35}],
+                ['2020-07-06', '2020-07-20', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 3), 'home': 1, 'work': 0.375}],
+                ['2020-07-20', '2020-08-01', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 4), 'home': 1, 'work': 0.4}],
+                ['2020-08-01', '2020-09-01', {'school': 0, 'social distancing': 0.5, 'home': 1, 'work': 0.5}],
+                ['2020-09-01', '2020-12-31', {'school': 0.5, 'social distancing': 0.5, 'home': 1, 'work': 0.5}]]
 nyRelaxAugust = Region(nyTotalInitialInfections, nyPopPath, nyCMPath, nySafeGraphIndexPath, controlInfoRelaxAugust, useSafeGraphIndex=False)
 nyRelaxAugustParameters = nyRelaxAugust.getRegionParameters()
 nyRelaxAugustCumCase, nyRelaxAugustDailyCase = model(EpidemicParameters, nyRelaxAugustParameters)
 pickle.dump([nyRelaxAugustCumCase, nyRelaxAugustDailyCase], open(savePath+'nyRelaxAugust.pkl', 'wb'))
 
 controlInfoRelaxOct = [['2020-01-01', '2020-03-07', {'school': 0.8, 'social distancing': 0.8, 'work': 0.8}],
-                ['2020-03-07', '2020-03-17', {'school': 0.8, 'social distancing': 0.5, 'work': 0.5}],
+                ['2020-03-07', '2020-03-17', {'school': 0.5, 'social distancing': 0.5, 'work': 0.5}],
                 ['2020-03-17', '2020-03-24', {'school': 0, 'social distancing': 0.4, 'work': 0.5}],
                 ['2020-03-24', '2020-06-08', {'school': 0, 'social distancing': 0.3, 'home': 1, 'work': 0.3}],
-                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.325, 'home': 1, 'work': 0.325}],
-                ['2020-06-22', '2020-07-06', {'school': 0, 'social distancing': 0.35, 'home': 1, 'work': 0.35}],
-                ['2020-07-06', '2020-07-20', {'school': 0, 'social distancing': 0.375, 'home': 1, 'work': 0.375}],
-                ['2020-07-20', '2020-09-01', {'school': 0, 'social distancing': 0.4, 'home': 1, 'work': 0.4}],
-                ['2020-09-01', '2020-10-01', {'school': 0, 'social distancing': 0.4, 'home': 1, 'work': 0.4}],
+                ['2020-06-08', '2020-06-22', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 1), 'home': 1, 'work': 0.3*math.pow(1.05, 1)}],
+                ['2020-06-22', '2020-07-06', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 2), 'home': 1, 'work': 0.3*math.pow(1.05, 2)}],
+                ['2020-07-06', '2020-07-20', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 3), 'home': 1, 'work': 0.3*math.pow(1.05, 3)}],
+                ['2020-07-20', '2020-10-01', {'school': 0, 'social distancing': 0.3*math.pow(1.05, 4), 'home': 1, 'work': 0.3*math.pow(1.05, 4)}],
                 ['2020-10-01', '2020-12-31', {'school': 0.5, 'social distancing': 0.5, 'home': 1, 'work': 0.5}]]
 nyRelaxOct = Region(nyTotalInitialInfections, nyPopPath, nyCMPath, nySafeGraphIndexPath, controlInfoRelaxOct, useSafeGraphIndex=False)
 nyRelaxOctParameters = nyRelaxOct.getRegionParameters()
