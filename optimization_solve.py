@@ -66,12 +66,12 @@ for weightSchool in weightSchoolList:
                 effectDeathList.append([weightSchool, 1, weightWork, weightOther])
   
 weight_identity = [1]*4
-weight_heterogeneity = [0.2, 0.2, 1, 0.5] 
+weight_heterogeneity = [0.3, 0.3, 1, 0.5] 
 print('Identity weight')            
 print('Best control for infections', best_search(weight_identity, effectTotalList, CM_sum))
-print('Best control for dealh', best_search(weight_identity, effectDeathList, CM_sum))
+print('Best control for death', best_search(weight_identity, effectDeathList, CM_sum))
 print('Best control for severe infections', best_search(weight_identity, effectSevereList, CM_sum))
 print('Intuitive assumptions')
 print('Best control for infections', best_search(weight_heterogeneity, effectTotalList, CM_sum))
-print('Best control for dealh', best_search(weight_heterogeneity, effectDeathList, CM_sum))
+print('Best control for death', best_search(weight_heterogeneity, effectDeathList, CM_sum))
 print('Best control for severe infections', best_search(weight_heterogeneity, effectSevereList, CM_sum))
